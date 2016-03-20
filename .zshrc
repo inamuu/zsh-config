@@ -131,7 +131,7 @@ function peco-ssh () {
       }
     }
   }
-  ' ~/.ssh/config | sort | peco --query "$LBUFFER")
+  ' ~/.ssh/conf.d/*| sort | peco --query "$LBUFFER")
   if [ -n "$selected_host" ]; then
     BUFFER="ssh ${selected_host}"
     zle accept-line

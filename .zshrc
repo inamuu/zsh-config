@@ -140,3 +140,38 @@ function peco-ssh () {
 }
 zle -N peco-ssh
 bindkey 'SS' peco-ssh
+
+## bash command
+alias ls='ls -lG'
+alias ll='ls -laG'
+alias rm='rm -i'
+alias mv='mv -i'
+alias cp='cp -i'
+alias ..='cd ..'
+alias vi='vim'
+alias c='clear'
+
+## Restart WiFi
+alias "wifion"='networksetup -setairportpower en0 on;exit'
+alias "wifioff"='networksetup -setairportpower en0 off;exit'
+alias "wifirestart"='networksetup -setairportpower en0 off;networksetup -setairportpower en0 on;exit'
+
+## git
+alias gs='git status'
+alias gb='git branch'
+alias gc='git checkout'
+alias gd='git diff'
+alias gl='git log'
+alias ga='git add .'
+alias gaa='git add --all'
+
+## hub
+alias g='cd $(ghq root)/$(ghq list | peco)'
+alias gh='hub browse $(ghq list | peco | cut -d "/" -f 2,3)'
+
+## Ruby
+PATH=~/.rbenv/shims:"$PATH"
+
+## Go
+export GOPATH=$HOME
+export PATH=$PATH:$GOPATH/bin

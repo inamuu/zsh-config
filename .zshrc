@@ -102,7 +102,8 @@ setopt no_beep
 # ビープ音の停止("inoremap " "補完時)
 setopt nolistbeep
  
-# cd -<tab>で以前移動したディレクトリを表示setopt auto_pushd
+# cd -<tab>で以前移動したディレクトリを表示
+setopt auto_pushd
  
 # ヒストリ("inoremap " "履歴)を保存、数を増やす
 HISTFILE=~/.zsh_history
@@ -140,6 +141,7 @@ function peco-ssh () {
 }
 zle -N peco-ssh
 bindkey 'SS' peco-ssh
+#alias ss='peco-ssh'
 
 ## bash command
 alias ls='ls -lG'
@@ -151,10 +153,13 @@ alias ..='cd ..'
 alias vi='vim'
 alias c='clear'
 
+## tmux bug fix
+alias ssh='TERM=xterm ssh'
+
 ## Restart WiFi
 alias "wifion"='networksetup -setairportpower en0 on;exit'
 alias "wifioff"='networksetup -setairportpower en0 off;exit'
-alias "wifirestart"='networksetup -setairportpower en0 off;networksetup -setairportpower en0 on;exit'
+alias "wifirestart"='networksetup -setairportpower en0 off;networksetup -setairportpower en0 on;exit;exit'
 
 ## git
 alias gs='git status'
@@ -175,3 +180,14 @@ PATH=~/.rbenv/shims:"$PATH"
 ## Go
 export GOPATH=$HOME
 export PATH=$PATH:$GOPATH/bin
+
+## history
+function peco-history-selection() {
+    BUFFER=`history -1 | tail -r  | awk '!a[$0]++' | peco`
+    CURSOR=$#BUFFER
+    zle reset-prompt
+}
+
+zle -N peco-history-selection
+bindkey '^R' peco-history-selection
+

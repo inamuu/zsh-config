@@ -183,7 +183,7 @@ export PATH=$PATH:$GOPATH/bin
 
 ## history
 function peco-history-selection() {
-    BUFFER=`history -1 | tail -r  | awk '!a[$0]++' | peco`
+    BUFFER=`history -1 | tail -r  | awk '!a[$0]++' | cut -f4- -d " " | peco`
     CURSOR=$#BUFFER
     zle reset-prompt
 }

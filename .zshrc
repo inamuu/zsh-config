@@ -87,42 +87,31 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-# 文字コードの指定
 export LANG=ja_JP.UTF-8
- 
-# 日本語ファイル名を表示可能にする
 setopt print_eight_bit
- 
-# cdなしでディレクトリ移動
 setopt auto_cd
- 
-# ビープ音の停止
 setopt no_beep
- 
-# ビープ音の停止("inoremap " "補完時)
 setopt nolistbeep
- 
-# cd -<tab>で以前移動したディレクトリを表示
 setopt auto_pushd
- 
-# ヒストリ("inoremap " "履歴)を保存、数を増やす
-HISTFILE=~/.zsh_history
-HISTSIZE=100000
-SAVEHIST=100000
-
-#fpath=("inoremap " "/path/to/homebrew/share/zsh-completions $fpath")
+setopt pushd_ignore_dups
  
 autoload -Uz compinit
 compinit -u
 
-# powerline theme
+## History
+HISTFILE=~/.zsh_history
+HISTSIZE=100000
+SAVEHIST=100000
+
+
+## powerline theme
 POWERLINE_HIDE_HOST_NAME="true"
 POWERLINE_SHORT_HOST_NAME="true"
 POWERLINE_HIDE_USER_NAME="true"
 POWERLINE_HIDE_GIT_PROMPT_STATUS="true"
-#POWERLINE_SHOW_GIT_ON_RIGHT="true"
 
-# peco&ssh
+
+## peco&ssh
 function peco-ssh () {
   local selected_host=$(awk '
   tolower($1)=="host" {
@@ -132,7 +121,7 @@ function peco-ssh () {
       }
     }
   }
-  ' ~/.ssh/conf.d/*| sort | peco --query "$LBUFFER")
+  ' ~/.ssh/config | sort | peco --query "$LBUFFER")
   if [ -n "$selected_host" ]; then
     BUFFER="ssh ${selected_host}"
     zle accept-line
@@ -141,17 +130,40 @@ function peco-ssh () {
 }
 zle -N peco-ssh
 bindkey 'SS' peco-ssh
-#alias ss='peco-ssh'
 
-## bash command
+## history
+function peco-history-selection() {
+    #BUFFER=`history | tail -r | awk '{$1="";print $0}' | peco`
+    BUFFER=`history | tail -r | awk '{$1="";print $0}' | egrep -v "ls" | uniq -u | peco`
+    CURSOR=$#BUFFER
+    zle reset-prompt
+}
+
+zle -N peco-history-selection
+bindkey '^R' peco-history-selection
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+source ~/.iterm2_shell_integration.`basename $SHELL`
+
+iterm2_print_user_vars() {
+    iterm2_set_user_var gitBranch $((git branch 2> /dev/null) | grep \* | cut -c3-)
+}
+
+
+## direnv
+eval "$(direnv hook zsh)"
+
+## shell command
 alias ls='ls -lG'
-alias ll='ls -laG'
 alias rm='rm -i'
 alias mv='mv -i'
 alias cp='cp -i'
 alias ..='cd ..'
 alias vi='vim'
 alias c='clear'
+
+function chpwd() { ls -GAF }
 
 ## tmux bug fix
 alias ssh='TERM=xterm ssh'
@@ -162,6 +174,7 @@ alias "wifioff"='networksetup -setairportpower en0 off;exit'
 alias "wifirestart"='networksetup -setairportpower en0 off;networksetup -setairportpower en0 on;exit;exit'
 
 ## git
+alias g='git'
 alias gs='git status'
 alias gb='git branch'
 alias gc='git checkout'
@@ -170,9 +183,17 @@ alias gl='git log'
 alias ga='git add .'
 alias gaa='git add --all'
 
+## bundle
+alias be='bundle exec'
+alias ber='bundle exec rake'
+
 ## hub
-alias g='cd $(ghq root)/$(ghq list | peco)'
-alias gh='hub browse $(ghq list | peco | cut -d "/" -f 2,3)'
+alias gh='cd $(ghq root)/$(ghq list | peco)'
+
+## Python
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
 
 ## Ruby
 PATH=~/.rbenv/shims:"$PATH"
@@ -181,13 +202,11 @@ PATH=~/.rbenv/shims:"$PATH"
 export GOPATH=$HOME
 export PATH=$PATH:$GOPATH/bin
 
-## history
-function peco-history-selection() {
-    BUFFER=`history -1 | tail -r  | awk '!a[$0]++' | cut -f4- -d " " | peco`
-    CURSOR=$#BUFFER
-    zle reset-prompt
-}
 
-zle -N peco-history-selection
-bindkey '^R' peco-history-selection
+## vagrant
+alias vag='vagrant'
+alias vagg='vagrant global-status'
+alias vagu='vagrant up'
+alias vagh='vagrant halt'
+alias vags='vagrant ssh'
 

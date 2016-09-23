@@ -134,7 +134,7 @@ bindkey 'SS' peco-ssh
 ## history
 function peco-history-selection() {
     #BUFFER=`history | tail -r | awk '{$1="";print $0}' | peco`
-    BUFFER=`history | tail -r | awk '{$1="";print $0}' | egrep -v "ls" | uniq -u | peco`
+    BUFFER=`history | tail -r | awk '{$1="";print $0}' | egrep -v "ls" | uniq -u | sed 's/^ //g' | peco`
     CURSOR=$#BUFFER
     zle reset-prompt
 }
@@ -201,7 +201,6 @@ PATH=~/.rbenv/shims:"$PATH"
 ## Go
 export GOPATH=$HOME
 export PATH=$PATH:$GOPATH/bin
-
 
 ## vagrant
 alias vag='vagrant'

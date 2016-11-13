@@ -98,20 +98,20 @@ setopt pushd_ignore_dups
 autoload -Uz compinit
 compinit -u
 
-## History
+### History
 HISTFILE=~/.zsh_history
 HISTSIZE=100000
 SAVEHIST=100000
 
 
-## powerline theme
+### powerline theme
 POWERLINE_HIDE_HOST_NAME="true"
 POWERLINE_SHORT_HOST_NAME="true"
 POWERLINE_HIDE_USER_NAME="true"
 POWERLINE_HIDE_GIT_PROMPT_STATUS="true"
 
 
-## peco&ssh
+### peco&ssh
 function peco-ssh () {
   local selected_host=$(awk '
   tolower($1)=="host" {
@@ -131,7 +131,8 @@ function peco-ssh () {
 zle -N peco-ssh
 bindkey 'SS' peco-ssh
 
-## history
+
+### history
 function peco-history-selection() {
     #BUFFER=`history | tail -r | awk '{$1="";print $0}' | peco`
     BUFFER=`history | tail -r | awk '{$1="";print $0}' | egrep -v "ls" | uniq -u | sed 's/^ //g' | peco`
@@ -151,10 +152,10 @@ iterm2_print_user_vars() {
 }
 
 
-## direnv
+### direnv
 eval "$(direnv hook zsh)"
 
-## shell command
+### shell command
 alias ls='ls -lG'
 alias rm='rm -i'
 alias mv='mv -i'
@@ -165,15 +166,10 @@ alias c='clear'
 
 function chpwd() { ls -GAF }
 
-## tmux bug fix
+### tmux bug fix
 alias ssh='TERM=xterm ssh'
 
-## Restart WiFi
-alias "wifion"='networksetup -setairportpower en0 on;exit'
-alias "wifioff"='networksetup -setairportpower en0 off;exit'
-alias "wifirestart"='networksetup -setairportpower en0 off;networksetup -setairportpower en0 on;exit;exit'
-
-## git
+### git
 alias g='git'
 alias gs='git status'
 alias gb='git branch'
@@ -181,28 +177,29 @@ alias gc='git checkout'
 alias gd='git diff'
 alias gl='git log'
 alias ga='git add .'
+alias gp='git push -u origin'
 alias gaa='git add --all'
 
-## bundle
+### bundle
 alias be='bundle exec'
 alias ber='bundle exec rake'
 
-## hub
+### hub
 alias gh='cd $(ghq root)/$(ghq list | peco)'
 
-## Python
+### Python
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
 
-## Ruby
+### Ruby
 PATH=~/.rbenv/shims:"$PATH"
 
-## Go
+### Go
 export GOPATH=$HOME
 export PATH=$PATH:$GOPATH/bin
 
-## vagrant
+### vagrant
 alias vag='vagrant'
 alias vagg='vagrant global-status'
 alias vagu='vagrant up'
